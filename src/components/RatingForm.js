@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   FormControl,
   FormLabel,
-  FormErrorMessage,
   Input,
   Button,
   Textarea,
@@ -10,7 +9,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-const RatingForm = ({ professorId, onSubmitRating }) => {
+const RatingForm = ({ professorId }) => {
   const [clarity, setClarity] = useState('');
   const [helpfulness, setHelpfulness] = useState('');
   const [easiness, setEasiness] = useState('');
@@ -19,27 +18,49 @@ const RatingForm = ({ professorId, onSubmitRating }) => {
 
   const isRatingValid = (rating) => rating >= 1 && rating <= 5;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (
       isRatingValid(clarity) &&
       isRatingValid(helpfulness) &&
       isRatingValid(easiness)
     ) {
-      onSubmitRating({
-        professorId,
-        clarity,
-        helpfulness,
-        easiness,
-        comment,
-      });
-      toast({
-        title: 'Rating submitted.',
-        description: "We've received your rating for the professor.",
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      try {
+        const response = await fetch('https://professor-rating-app-2ujpnwmv.devinapps.com/api/ratings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            professorId,
+            clarity: Number(clarity),
+            helpfulness: Number(helpfulness),
+            easiness: Number(easiness),
+            comment,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        toast({
+          title: 'Rating submitted.',
+          description: "We've received your rating for the professor.",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      } catch (error) {
+        toast({
+          title: 'Submission failed.',
+          description: `Error: ${error.message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     } else {
       toast({
         title: 'Invalid rating.',
