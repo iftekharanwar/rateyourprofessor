@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, Button } from '@chakra-ui/react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Import the useAuth hook
+import { useAuth } from '../AuthContext'; // Import the useAuth hook
 
 const Header = () => {
   const navigate = useNavigate();
