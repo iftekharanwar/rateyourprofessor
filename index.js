@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors({ origin: ['https://fastidious-zuccutto-ebad83.netlify.app', 'https://phenomenal-starship-6bea2e.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
+app.use(cors({ origin: ['https://fastidious-zuccutto-ebad83.netlify.app', 'https://phenomenal-starship-6bea2e.netlify.app', 'https://lucky-kelpie-a256ac.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -45,14 +45,27 @@ const db = new sqlite3.Database(process.env.DATABASE_PATH || './ratings.db', sql
   logger.info('Connected to the ratings database.');
 });
 
+// Authentication middleware to verify JWT token
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401); // if there's no token
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403); // if the token is invalid
+    req.user = user;
+    next();
+  });
+};
+
 // Route to test the server is working
 app.get('/', (req, res) => {
   res.send('RateYourProfessor backend is running!');
 });
 
 // CRUD API endpoints for professor ratings
-// Create a new rating
-app.post('/api/ratings', (req, res) => {
+// Create a new rating with authentication check
+app.post('/api/ratings', authenticateToken, (req, res) => {
   const { professorName, rating, comments } = req.body;
   if (typeof professorName !== 'string' ||
       typeof rating !== 'number' ||
@@ -89,7 +102,7 @@ app.get('/api/ratings', (req, res) => {
 });
 
 // Update a rating
-app.put('/api/ratings/:id', (req, res) => {
+app.put('/api/ratings/:id', authenticateToken, (req, res) => {
   const { clarity, helpfulness, easiness, comment } = req.body;
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) {
@@ -122,7 +135,7 @@ app.put('/api/ratings/:id', (req, res) => {
 });
 
 // Delete a rating
-app.delete('/api/ratings/:id', (req, res) => {
+app.delete('/api/ratings/:id', authenticateToken, (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) {
     return res.status(400).json({ error: 'Invalid ID: ID must be a number.' });
@@ -142,8 +155,8 @@ app.delete('/api/ratings/:id', (req, res) => {
   });
 });
 
-// Add a new professor
-app.post('/api/professors', (req, res) => {
+// Add a new professor with authentication check
+app.post('/api/professors', authenticateToken, (req, res) => {
   const { name, department } = req.body;
   if (!name || !department) {
     return res.status(400).json({ error: 'Please provide both name and department for the professor.' });
@@ -151,13 +164,13 @@ app.post('/api/professors', (req, res) => {
   const sql = `INSERT INTO professors (name, department) VALUES (?, ?)`;
   const params = [name, department];
   db.run(sql, params, function(err) {
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
-    res.json({
-      message: 'New professor added successfully',
-      data: { id: this.lastID, name, department },
-    });
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      res.json({
+        message: 'New professor added successfully',
+        data: { id: this.lastID, name, department },
+      });
   });
 });
 
