@@ -1,15 +1,17 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Dependency directories
+node_modules/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Optional npm cache directory
+.npm
 
-# testing
-/coverage
+# Optional eslint cache
+.eslintcache
 
-# production
-/build
+# Optional REPL history
+.node_repl_history
+
+# dotenv environment variables file
+.env
 
 # misc
 .DS_Store
