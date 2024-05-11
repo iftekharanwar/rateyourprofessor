@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Importing BrowserRouter, Routes, Route, and Navigate from react-router-dom
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import ProfessorList from './components/ProfessorList';
-import RatingForm from './components/RatingForm'; // Importing the RatingForm component
-import Professor from './components/Professor'; // Importing the Professor component
-import Footer from './components/Footer'; // Importing the Footer component
-import About from './components/About'; // Importing the About component
-import Contact from './components/Contact'; // Importing the Contact component
+import RatingForm from './components/RatingForm';
+import Professor from './components/Professor';
+import Footer from './components/Footer';
+import About from './components/About';
+import Contact from './components/Contact';
+import Login from './components/Login'; // Importing the Login component
+import Registration from './components/Registration'; // Importing the Registration component
 
 function App() {
-  // State to store the professor's details
+  // State to manage user authentication status
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Function to update authentication status
+  const handleAuthentication = (status) => {
+    setIsAuthenticated(status);
+  };
+
+  // Rest of the state declarations remain unchanged
   const [professorDetails, setProfessorDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Moved to the top level of the App component
   const [submissionMessage, setSubmissionMessage] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
 
@@ -95,7 +104,7 @@ function App() {
   return (
     <div className="App">
       <Router> {/* Wrapping the Routes with Router */}
-        <Header />
+        <Header isAuthenticated={isAuthenticated} handleAuthentication={handleAuthentication} />
         <Routes>
           <Route exact path="/" element={
             <>
@@ -109,6 +118,8 @@ function App() {
           <Route path="/about" element={<About />} /> {/* Render the About component */}
           <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
           <Route path="/rate/:professorId" element={<RatingForm professorId={professorId} onSubmitRating={onSubmitRating} />} /> {/* Passing the professorId and onSubmitRating function as props */}
+          <Route path="/login" element={<Login />} /> {/* Render the Login component */}
+          <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
           <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all undefined routes to the home page */}
         </Routes>
         <Footer /> {/* Adding the Footer component */}
