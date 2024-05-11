@@ -193,6 +193,40 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+// User login endpoint
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Please provide email and password.' });
+    }
+    // Query user from the database
+    const sql = `SELECT * FROM users WHERE email = ?`;
+    db.get(sql, email, async (err, user) => {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid email or password.' });
+      }
+      // Compare hashed password
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(401).json({ error: 'Invalid email or password.' });
+      }
+      // Create JWT token
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.json({
+        message: 'User logged in successfully',
+        token
+      });
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   logger.error(err.stack);
