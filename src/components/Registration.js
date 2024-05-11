@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, FormErrorMessage, useToast } from '@chakra-ui/react';
 
 const Registration = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,13 +22,20 @@ const Registration = () => {
       return;
     }
 
+    // Check if all fields are filled
+    if (!username || !email || !password) {
+      setError('Please fill all fields.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('https://professor-rating-app-jxmv10yc.devinapps.com/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       if (!response.ok) {
@@ -62,6 +70,12 @@ const Registration = () => {
     <Box my={8} textAlign="left">
       <form onSubmit={handleSubmit}>
         <FormControl isInvalid={error}>
+          <FormLabel>Username</FormLabel>
+          <Input
+            type="text"
+            placeholder="Enter your username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <FormLabel>Email address</FormLabel>
           <Input
             type="email"
