@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, FormErrorMessage, useToast } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext'; // Import the useAuth hook
 
-const Login = ({ onLoginSuccess }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Use the useAuth hook
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,7 +38,8 @@ const Login = ({ onLoginSuccess }) => {
         duration: 9000,
         isClosable: true,
       });
-      onLoginSuccess(data.token);
+      login(data.token); // Call the login function from useAuth
+      navigate('/'); // Redirect to the home page after login
     } catch (error) {
       setError('Failed to login. Please check your credentials and try again.');
       toast({
