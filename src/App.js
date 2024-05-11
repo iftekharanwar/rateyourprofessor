@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './AuthContext'; // Importing the AuthProvider
 import './App.css';
 import Header from './components/Header';
 import ProfessorList from './components/ProfessorList';
@@ -12,13 +13,7 @@ import Login from './components/Login'; // Importing the Login component
 import Registration from './components/Registration'; // Importing the Registration component
 
 function App() {
-  // State to manage user authentication status
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Function to update authentication status
-  const handleAuthentication = (status) => {
-    setIsAuthenticated(status);
-  };
+  // Removed the local authentication state and handleAuthentication function
 
   // Rest of the state declarations remain unchanged
   const [professorDetails, setProfessorDetails] = useState(null);
@@ -104,25 +99,27 @@ function App() {
   return (
     <div className="App">
       <Router> {/* Wrapping the Routes with Router */}
-        <Header isAuthenticated={isAuthenticated} handleAuthentication={handleAuthentication} />
-        <Routes>
-          <Route exact path="/" element={
-            <>
-              {error && <p>Error loading professor details: {error}</p>}
-              {loading ? <p>Loading professor details...</p> : professorDetails ? <Professor details={professorDetails} /> : <p>Professor details not found.</p>} {/* Render the Professor component with fetched details or show loading message */}
-              {submissionMessage && <p>{submissionMessage}</p>}
-              {submissionError && <p>{submissionError}</p>}
-              <ProfessorList />
-            </>
-          } />
-          <Route path="/about" element={<About />} /> {/* Render the About component */}
-          <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
-          <Route path="/rate/:professorId" element={<RatingForm professorId={professorId} onSubmitRating={onSubmitRating} />} /> {/* Passing the professorId and onSubmitRating function as props */}
-          <Route path="/login" element={<Login />} /> {/* Render the Login component */}
-          <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
-          <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all undefined routes to the home page */}
-        </Routes>
-        <Footer /> {/* Adding the Footer component */}
+        <AuthProvider> {/* Wrapping the Routes with AuthProvider */}
+          <Header />
+          <Routes>
+            <Route exact path="/" element={
+              <>
+                {error && <p>Error loading professor details: {error}</p>}
+                {loading ? <p>Loading professor details...</p> : professorDetails ? <Professor details={professorDetails} /> : <p>Professor details not found.</p>} {/* Render the Professor component with fetched details or show loading message */}
+                {submissionMessage && <p>{submissionMessage}</p>}
+                {submissionError && <p>{submissionError}</p>}
+                <ProfessorList />
+              </>
+            } />
+            <Route path="/about" element={<About />} /> {/* Render the About component */}
+            <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
+            <Route path="/rate/:professorId" element={<RatingForm professorId={professorId} onSubmitRating={onSubmitRating} />} /> {/* Passing the professorId and onSubmitRating function as props */}
+            <Route path="/login" element={<Login />} /> {/* Render the Login component */}
+            <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
+            <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all undefined routes to the home page */}
+          </Routes>
+          <Footer /> {/* Adding the Footer component */}
+        </AuthProvider>
       </Router>
     </div>
   );
