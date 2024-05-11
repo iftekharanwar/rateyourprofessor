@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Importing BrowserRouter, Routes, Route, and Navigate from react-router-dom
 import './App.css';
 import Header from './components/Header';
 import ProfessorList from './components/ProfessorList';
 import RatingForm from './components/RatingForm'; // Importing the RatingForm component
 import Professor from './components/Professor'; // Importing the Professor component
 import Footer from './components/Footer'; // Importing the Footer component
+import About from './components/About'; // Importing the About component
+import Contact from './components/Contact'; // Importing the Contact component
 
 function App() {
   // State to store the professor's details
@@ -36,11 +39,22 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
-      {professorDetails && <Professor details={professorDetails} />} {/* Render the Professor component with fetched details */}
-      <ProfessorList />
-      <RatingForm professorId={professorId} onSubmitRating={onSubmitRating} /> {/* Passing the professorId and onSubmitRating function as props */}
-      <Footer /> {/* Adding the Footer component */}
+      <Router> {/* Wrapping the Routes with Router */}
+        <Header />
+        <Routes>
+          <Route exact path="/" element={
+            <>
+              {professorDetails && <Professor details={professorDetails} />} {/* Render the Professor component with fetched details */}
+              <ProfessorList />
+            </>
+          } />
+          <Route path="/about" element={<About />} /> {/* Render the About component */}
+          <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
+          <Route path="/rate/:professorId" element={<RatingForm professorId={professorId} onSubmitRating={onSubmitRating} />} /> {/* Passing the professorId and onSubmitRating function as props */}
+          <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all undefined routes to the home page */}
+        </Routes>
+        <Footer /> {/* Adding the Footer component */}
+      </Router>
     </div>
   );
 }
