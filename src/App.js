@@ -14,6 +14,9 @@ function App() {
   const [professorDetails, setProfessorDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Moved to the top level of the App component
+  const [submissionMessage, setSubmissionMessage] = useState(null);
+  const [submissionError, setSubmissionError] = useState(null);
 
   // Temporary professorId for testing purposes
   const professorId = 1;
@@ -37,11 +40,13 @@ function App() {
     })
     .then(data => {
       console.log('Rating submitted successfully:', data);
-      // Here you could handle a successful submission, e.g., updating the state or redirecting the user
+      // Update the success message state
+      setSubmissionMessage('Rating submitted successfully!');
     })
     .catch(error => {
       console.error('Error submitting rating:', error);
-      // Here you could handle errors, e.g., displaying a message to the user
+      // Update the error message state
+      setSubmissionError('Error submitting rating. Please try again.');
     });
   };
 
@@ -96,6 +101,8 @@ function App() {
             <>
               {error && <p>Error loading professor details: {error}</p>}
               {loading ? <p>Loading professor details...</p> : professorDetails ? <Professor details={professorDetails} /> : <p>Professor details not found.</p>} {/* Render the Professor component with fetched details or show loading message */}
+              {submissionMessage && <p>{submissionMessage}</p>}
+              {submissionError && <p>{submissionError}</p>}
               <ProfessorList />
             </>
           } />
