@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors({ origin: 'https://fastidious-zuccutto-ebad83.netlify.app', credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
+app.use(cors({ origin: ['https://fastidious-zuccutto-ebad83.netlify.app', 'https://phenomenal-starship-6bea2e.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -138,6 +138,25 @@ app.delete('/api/ratings/:id', (req, res) => {
     res.json({
       message: 'Deleted successfully',
       changes: this.changes
+    });
+  });
+});
+
+// Add a new professor
+app.post('/api/professors', (req, res) => {
+  const { name, department } = req.body;
+  if (!name || !department) {
+    return res.status(400).json({ error: 'Please provide both name and department for the professor.' });
+  }
+  const sql = `INSERT INTO professors (name, department) VALUES (?, ?)`;
+  const params = [name, department];
+  db.run(sql, params, function(err) {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    res.json({
+      message: 'New professor added successfully',
+      data: { id: this.lastID, name, department },
     });
   });
 });
