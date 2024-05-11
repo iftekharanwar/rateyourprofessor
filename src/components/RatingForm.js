@@ -44,7 +44,7 @@ const RatingForm = ({ professorId }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const result = await response.json();
+        // The result variable has been removed as it was not used.
         toast({
           title: 'Rating submitted.',
           description: "We've received your rating for the professor.",
