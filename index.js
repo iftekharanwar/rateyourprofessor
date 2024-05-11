@@ -1,6 +1,8 @@
 require('dotenv').config();
 const winston = require('winston');
 const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const app = express();
 app.set('trust proxy', 1);
 const port = process.env.PORT || 3001;
@@ -159,6 +161,36 @@ app.get('/api/professors/:id', (req, res) => {
       data: row
     });
   });
+});
+
+// User registration endpoint
+app.post('/api/register', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'Please provide username, email, and password.' });
+    }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Insert user into the database
+    const sql = `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`;
+    const params = [username, email, hashedPassword];
+    db.run(sql, params, function(err) {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      // Create JWT token
+      const token = jwt.sign({ id: this.lastID }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.json({
+        message: 'User registered successfully',
+        data: { id: this.lastID, username, email },
+        token
+      });
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Error handling middleware
