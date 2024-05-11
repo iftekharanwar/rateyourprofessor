@@ -42,7 +42,7 @@ const Registration = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      await response.json(); // Removed the unused variable 'data'
       toast({
         title: 'Registration successful.',
         description: "You've been registered and logged in.",

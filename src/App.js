@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './AuthContext'; // Importing the AuthProvider
+import ProtectedRoute from './components/ProtectedRoute'; // Importing the ProtectedRoute component
 import './App.css';
 import Header from './components/Header';
 import ProfessorList from './components/ProfessorList';
@@ -11,6 +12,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Login from './components/Login'; // Importing the Login component
 import Registration from './components/Registration'; // Importing the Registration component
+import AddProfessorForm from './components/AddProfessorForm'; // Importing the AddProfessorForm component
 
 function App() {
   // Removed the local authentication state and handleAuthentication function
@@ -116,6 +118,7 @@ function App() {
             <Route path="/rate/:professorId" element={<RatingForm professorId={professorId} onSubmitRating={onSubmitRating} />} /> {/* Passing the professorId and onSubmitRating function as props */}
             <Route path="/login" element={<Login />} /> {/* Render the Login component */}
             <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
+            <Route path="/add-professor" element={<ProtectedRoute><AddProfessorForm /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all undefined routes to the home page */}
           </Routes>
           <Footer /> {/* Adding the Footer component */}
