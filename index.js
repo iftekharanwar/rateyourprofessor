@@ -2,6 +2,7 @@ require('dotenv').config();
 const winston = require('winston');
 const express = require('express');
 const app = express();
+app.set('trust proxy', true);
 const port = process.env.PORT || 3001;
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
