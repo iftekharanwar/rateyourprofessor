@@ -50,19 +50,15 @@ app.get('/', (req, res) => {
 // CRUD API endpoints for professor ratings
 // Create a new rating
 app.post('/api/ratings', (req, res) => {
-  const { professorId, clarity, helpfulness, easiness, comment } = req.body;
-  if (typeof professorId !== 'number' ||
-      typeof clarity !== 'number' ||
-      typeof helpfulness !== 'number' ||
-      typeof easiness !== 'number' ||
-      typeof comment !== 'string' ||
-      clarity < 1 || clarity > 5 ||
-      helpfulness < 1 || helpfulness > 5 ||
-      easiness < 1 || easiness > 5) {
-    return res.status(400).json({ error: 'Invalid input: Ensure that ratings are numbers between 1 and 5 and comment is a string.' });
+  const { professorName, rating, comments } = req.body;
+  if (typeof professorName !== 'string' ||
+      typeof rating !== 'number' ||
+      typeof comments !== 'string' ||
+      rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'Invalid input: Ensure that professorName is a string, rating is a number between 1 and 5, and comments is a string.' });
   }
-  const sql = `INSERT INTO ratings (professorId, clarity, helpfulness, easiness, comment) VALUES (?, ?, ?, ?, ?)`;
-  const params = [professorId, clarity, helpfulness, easiness, comment];
+  const sql = `INSERT INTO ratings (professorName, rating, comments) VALUES (?, ?, ?)`;
+  const params = [professorName, rating, comments];
   db.run(sql, params, function(err) {
     if (err) {
       return res.status(400).json({ error: err.message });
