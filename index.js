@@ -2,7 +2,7 @@ require('dotenv').config();
 const winston = require('winston');
 const express = require('express');
 const app = express();
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 const port = process.env.PORT || 3001;
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: 'https://fastidious-zuccutto-ebad83.netlify.app', credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -136,6 +136,27 @@ app.delete('/api/ratings/:id', (req, res) => {
     res.json({
       message: 'Deleted successfully',
       changes: this.changes
+    });
+  });
+});
+
+// Get a single professor's details
+app.get('/api/professors/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'Invalid ID: ID must be a number.' });
+  }
+  const sql = `SELECT * FROM professors WHERE id = ?`;
+  db.get(sql, id, (err, row) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    if (!row) {
+      return res.status(404).json({ error: 'Professor not found with the provided ID.' });
+    }
+    res.json({
+      message: 'Success',
+      data: row
     });
   });
 });
