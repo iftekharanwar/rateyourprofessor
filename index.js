@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors({ origin: ['https://fastidious-zuccutto-ebad83.netlify.app', 'https://phenomenal-starship-6bea2e.netlify.app', 'https://lucky-kelpie-a256ac.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
+app.use(cors({ origin: ['https://dynamic-valkyrie-c2466f.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -191,6 +191,21 @@ app.get('/api/professors/:id', (req, res) => {
     res.json({
       message: 'Success',
       data: row
+    });
+  });
+});
+
+// Get all professors
+app.get('/api/professors', (req, res) => {
+  const sql = `SELECT * FROM professors`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      logger.error(err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({
+      message: 'Success',
+      data: rows
     });
   });
 });
