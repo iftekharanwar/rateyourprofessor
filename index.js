@@ -66,15 +66,19 @@ app.get('/', (req, res) => {
 // CRUD API endpoints for professor ratings
 // Create a new rating with authentication check
 app.post('/api/ratings', authenticateToken, (req, res) => {
-  const { professorName, rating, comments } = req.body;
-  if (typeof professorName !== 'string' ||
-      typeof rating !== 'number' ||
-      typeof comments !== 'string' ||
-      rating < 1 || rating > 5) {
-    return res.status(400).json({ error: 'Invalid input: Ensure that professorName is a string, rating is a number between 1 and 5, and comments is a string.' });
+  const { professorId, clarity, helpfulness, easiness, comment } = req.body;
+  if (typeof professorId !== 'number' ||
+      typeof clarity !== 'number' ||
+      typeof helpfulness !== 'number' ||
+      typeof easiness !== 'number' ||
+      typeof comment !== 'string' ||
+      clarity < 1 || clarity > 5 ||
+      helpfulness < 1 || helpfulness > 5 ||
+      easiness < 1 || easiness > 5) {
+    return res.status(400).json({ error: 'Invalid input: Ensure that professorId is a number, ratings are numbers between 1 and 5, and comment is a string.' });
   }
-  const sql = `INSERT INTO ratings (professorName, rating, comments) VALUES (?, ?, ?)`;
-  const params = [professorName, rating, comments];
+  const sql = `INSERT INTO ratings (professorId, clarity, helpfulness, easiness, comment) VALUES (?, ?, ?, ?, ?)`;
+  const params = [professorId, clarity, helpfulness, easiness, comment];
   db.run(sql, params, function(err) {
     if (err) {
       return res.status(400).json({ error: err.message });
