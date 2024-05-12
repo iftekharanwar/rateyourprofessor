@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors({ origin: ['https://dynamic-valkyrie-c2466f.netlify.app', 'https://adorable-baklava-77a579.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
+app.use(cors({ origin: ['http://localhost:3000', 'https://dynamic-valkyrie-c2466f.netlify.app', 'https://adorable-baklava-77a579.netlify.app', 'https://gregarious-toffee-be25ae.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -227,7 +227,7 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: err.message });
       }
       // Create JWT token
-      const token = jwt.sign({ id: this.lastID }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: this.lastID }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '1h' });
       res.json({
         message: 'User registered successfully',
         data: { id: this.lastID, username, email },
@@ -262,7 +262,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: 'Invalid email or password.' });
       }
       // Create JWT token
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '1h' });
       res.json({
         message: 'User logged in successfully',
         token
