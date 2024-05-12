@@ -13,9 +13,12 @@ const Professor = ({ details }) => {
   const tags = details && Array.isArray(details.tags) ? details.tags : [];
 
   const handleRateClick = (professor) => {
+    console.log('Rate button clicked, professor details:', professor); // Debugging statement
     setSelectedProfessor(professor);
     onOpen();
   };
+
+  console.log('Modal isOpen state:', isOpen); // Debugging statement
 
   return (
     <Box p={5} shadow="md" borderWidth="1px" className="ProfessorList">
