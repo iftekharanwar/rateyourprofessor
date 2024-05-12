@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Text, Button } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, Stack } from '@chakra-ui/react';
 
 const Professor = ({ details }) => {
   // Check if details and details.ratings are defined
@@ -11,10 +11,11 @@ const Professor = ({ details }) => {
   return (
     <Box p={5} shadow="md" borderWidth="1px">
       <Flex direction="column" align="start">
-        <Text fontSize="2xl" fontWeight="bold">{details ? details.name : 'Professor Name'}</Text>
-        {/* Separate the department and university onto a new line */}
-        <Text fontSize="l" mt={1}>{details ? details.department : 'Department'}</Text>
-        <Text fontSize="l" mt={1}>{details ? details.university : 'University'}</Text>
+        <Stack spacing={3} direction="column" align="start">
+          <Text fontSize="2xl" fontWeight="bold" mb={2}>{details ? details.name : 'Professor Name'}</Text>
+          <Text fontSize="l" mb={2}>{details ? `${details.department},` : 'Department'}</Text>
+          <Text fontSize="l" mb={2}>{details ? details.university : 'University'}</Text>
+        </Stack>
         <Box>
           {/* Ratings would be displayed here */}
           <Text fontSize="m">Clarity: {ratings.clarity}</Text>
