@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   FormControl,
   FormLabel,
@@ -9,7 +10,8 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-const RatingForm = ({ professorId }) => {
+const RatingForm = () => {
+  const { professorId } = useParams();
   const [clarity, setClarity] = useState('');
   const [helpfulness, setHelpfulness] = useState('');
   const [easiness, setEasiness] = useState('');
