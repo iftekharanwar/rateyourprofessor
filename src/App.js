@@ -18,14 +18,11 @@ function App() {
   // Removed the local authentication state and handleAuthentication function
 
   // Rest of the state declarations remain unchanged
-  const [professorDetails, setProfessorDetails] = useState(null);
+  const [professorsList, setProfessorsList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submissionMessage, setSubmissionMessage] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
-
-  // Temporary professorId for testing purposes
-  const professorId = 1;
 
   // Define the onSubmitRating function to handle form submission
   const onSubmitRating = (ratingData) => {
@@ -56,10 +53,10 @@ function App() {
     });
   };
 
-  // Fetch professor details from the backend API
+  // Fetch all professors from the backend API
   useEffect(() => {
     // Update the API URL to point to the correct backend server
-    const apiUrl = `https://professor-rating-app-jxmv10yc.devinapps.com/api/professors/${professorId}`;
+    const apiUrl = `https://professor-rating-app-jxmv10yc.devinapps.com/api/professors`;
 
     // Fetch data and update state
     fetch(apiUrl)
@@ -71,32 +68,20 @@ function App() {
       })
       .then(data => {
         // Check if the response contains the expected data structure
-        if (data && data.data && typeof data.data === 'object') {
-          // Convert tags string to array if it is not already an array
-          const tagsArray = typeof data.data.tags === 'string' ? data.data.tags.split(', ') : data.data.tags;
-          // Update the data structure to match the frontend's expectation
-          const updatedData = {
-            ...data.data,
-            ratings: {
-              clarity: data.data.clarity,
-              helpfulness: data.data.helpfulness,
-              easiness: data.data.easiness
-            },
-            comments: [], // Assuming no comments data is available yet
-            tags: tagsArray
-          };
-          setProfessorDetails(updatedData);
+        if (data && data.message === 'Success' && Array.isArray(data.data)) {
+          // Set the professors list state with the fetched data
+          setProfessorsList(data.data);
         } else {
           // Handle cases where the data structure is not as expected
           throw new Error('Unexpected data structure');
         }
       })
       .catch(error => {
-        console.error('Error fetching professor details:', error);
+        console.error('Error fetching professors list:', error);
         setError(error.toString());
       })
       .finally(() => setLoading(false));
-  }, [professorId]); // Dependency array to re-run the effect if professorId changes
+  }, []); // Empty dependency array to only run the effect on component mount
 
   return (
     <div className="App">
@@ -107,15 +92,15 @@ function App() {
             <Route exact path="/" element={
               <>
                 {error && <p>Error loading professor details: {error}</p>}
-                {loading ? <p>Loading professor details...</p> : professorDetails ? <Professor details={professorDetails} /> : <p>Professor details not found.</p>} {/* Render the Professor component with fetched details or show loading message */}
+                {loading ? <p>Loading professor details...</p> : professorsList && professorsList.length > 0 ? <Professor details={professorsList[0]} /> : <p>Professor details not found.</p>} {/* Render the Professor component with details of the first professor or show loading message */}
                 {submissionMessage && <p>{submissionMessage}</p>}
                 {submissionError && <p>{submissionError}</p>}
-                <ProfessorList />
+                <ProfessorList professors={professorsList} /> {/* Passing the professorsList as professors prop */}
               </>
             } />
             <Route path="/about" element={<About />} /> {/* Render the About component */}
             <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
-            <Route path="/rate/:professorId" element={<RatingForm professorId={professorId} onSubmitRating={onSubmitRating} />} /> {/* Passing the professorId and onSubmitRating function as props */}
+            <Route path="/rate/:professorId" element={<RatingForm onSubmitRating={onSubmitRating} />} /> {/* The RatingForm component will handle extracting the professorId from the route parameters */}
             <Route path="/login" element={<Login />} /> {/* Render the Login component */}
             <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
             <Route path="/add-professor" element={<ProtectedRoute><AddProfessorForm /></ProtectedRoute>} />
