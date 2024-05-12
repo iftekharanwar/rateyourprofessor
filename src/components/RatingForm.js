@@ -9,7 +9,7 @@ import {
   Box,
   useToast,
 } from '@chakra-ui/react';
-import { AuthContext } from '../AuthContext'; // Import the AuthContext
+import { useAuth } from '../AuthContext'; // Corrected import to useAuth
 
 const RatingForm = () => {
   const { professorId } = useParams();
@@ -18,7 +18,7 @@ const RatingForm = () => {
   const [easiness, setEasiness] = useState('');
   const [comment, setComment] = useState('');
   const toast = useToast();
-  const { token } = useContext(AuthContext); // Use the AuthContext to get the token
+  const { token } = useAuth(); // Use the useAuth hook to get the token
 
   const isRatingValid = (rating) => rating >= 1 && rating <= 5;
 
