@@ -31,7 +31,14 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://stalwart-chebakia-698c7a.netlify.app',
+  origin: (origin, callback) => {
+    const allowedOrigins = ['https://shimmering-tanuki-543e93.netlify.app', /\.netlify\.app$/];
+    if (!origin || allowedOrigins.some(o => o instanceof RegExp ? o.test(origin) : o === origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -44,17 +51,13 @@ app.use(rateLimit({
   max: 100 // limit each IP to 100 requests per windowMs
 }));
 
-// Handle OPTIONS requests for CORS preflight
-app.options('*', cors({
-  origin: 'https://stalwart-chebakia-698c7a.netlify.app',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Simplified handling of OPTIONS requests for CORS preflight
+app.options('*', cors());
 
-// Middleware to log the response headers for debugging purposes
+// Middleware to log the request origin and response headers for debugging purposes
 app.use((req, res, next) => {
   res.on('finish', () => {
+    logger.info(`Request Origin: ${req.get('origin')}`);
     logger.info(`Response headers: ${JSON.stringify(res.getHeaders())}`);
   });
   next();
@@ -239,11 +242,7 @@ app.get('/api/professors', (req, res) => {
 
 // User registration endpoint
 app.post('/api/register', async (req, res) => {
-  // Set CORS headers for the registration response
-  res.header('Access-Control-Allow-Origin', 'https://stalwart-chebakia-698c7a.netlify.app');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Removed explicit CORS headers, the cors package handles this
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
