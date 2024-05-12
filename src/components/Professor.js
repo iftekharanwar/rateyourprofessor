@@ -5,7 +5,8 @@ const Professor = ({ details }) => {
   // Check if details and details.ratings are defined
   const ratings = details && details.ratings ? details.ratings : { clarity: 'N/A', helpfulness: 'N/A', easiness: 'N/A' };
   const comments = details && details.comments ? details.comments : ['No comments available'];
-  const tags = details && details.tags ? details.tags : ['No tags available'];
+  // Ensure tags is an array, provide an empty array as a fallback
+  const tags = details && Array.isArray(details.tags) ? details.tags : [];
 
   return (
     <Box p={5} shadow="md" borderWidth="1px">
