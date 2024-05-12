@@ -1,12 +1,21 @@
-import React from 'react';
-import { Box, Flex, Text, Button, Stack } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, Flex, Text, Button, Stack, useDisclosure } from '@chakra-ui/react';
+import RatingModal from './RatingModal'; // Assuming there is a component to handle the modal
 
 const Professor = ({ details }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedProfessor, setSelectedProfessor] = useState(null);
+
   // Check if details and details.ratings are defined
   const ratings = details && details.ratings ? details.ratings : { clarity: 'N/A', helpfulness: 'N/A', easiness: 'N/A' };
   const comments = details && details.comments ? details.comments : ['No comments available'];
   // Ensure tags is an array, provide an empty array as a fallback
   const tags = details && Array.isArray(details.tags) ? details.tags : [];
+
+  const handleRateClick = (professor) => {
+    setSelectedProfessor(professor);
+    onOpen();
+  };
 
   return (
     <Box p={5} shadow="md" borderWidth="1px" className="ProfessorList">
@@ -34,9 +43,10 @@ const Professor = ({ details }) => {
             <Button key={index} size="sm" m={1} className="TagButton">{tag}</Button>
           ))}
         </Flex>
-        <Button colorScheme="teal" variant="outline" mt={4} className="RateButton">
+        <Button colorScheme="teal" variant="outline" mt={4} className="RateButton" onClick={() => handleRateClick(details)}>
           Rate Professor
         </Button>
+        <RatingModal isOpen={isOpen} onClose={onClose} professor={selectedProfessor} />
       </Flex>
     </Box>
   );
