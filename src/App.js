@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './AuthContext'; // Importing the AuthProvider
 import ProtectedRoute from './components/ProtectedRoute'; // Importing the ProtectedRoute component
 import './App.css';
@@ -52,6 +52,12 @@ function App() {
       .finally(() => setLoading(false));
   }, []); // Empty dependency array to only run the effect on component mount
 
+  // Function to render RatingForm with professorId from URL params
+  const RatingFormWithId = () => {
+    const { professorId } = useParams();
+    return <RatingForm professorId={professorId} />;
+  };
+
   return (
     <div className="App">
       <Router> {/* Wrapping the Routes with Router */}
@@ -67,7 +73,7 @@ function App() {
             } />
             <Route path="/about" element={<About />} /> {/* Render the About component */}
             <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
-            <Route path="/rate/:professorId" element={<RatingForm />} /> {/* The RatingForm component will handle extracting the professorId from the route parameters */}
+            <Route path="/rate/:professorId" element={<RatingFormWithId />} /> {/* Render the RatingForm component with professorId from URL params */}
             <Route path="/login" element={<Login />} /> {/* Render the Login component */}
             <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
             <Route path="/add-professor" element={<ProtectedRoute><AddProfessorForm /></ProtectedRoute>} />
