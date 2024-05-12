@@ -239,6 +239,11 @@ app.get('/api/professors', (req, res) => {
 
 // User registration endpoint
 app.post('/api/register', async (req, res) => {
+  // Set CORS headers for the registration response
+  res.header('Access-Control-Allow-Origin', 'https://stalwart-chebakia-698c7a.netlify.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
