@@ -21,37 +21,6 @@ function App() {
   const [professorsList, setProfessorsList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [submissionMessage, setSubmissionMessage] = useState(null);
-  const [submissionError, setSubmissionError] = useState(null);
-
-  // Define the onSubmitRating function to handle form submission
-  const onSubmitRating = (ratingData) => {
-    // Sending the rating data to the backend server
-    const apiUrl = `https://professor-rating-app-jxmv10yc.devinapps.com/api/ratings`;
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ratingData),
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Rating submitted successfully:', data);
-      // Update the success message state
-      setSubmissionMessage('Rating submitted successfully!');
-    })
-    .catch(error => {
-      console.error('Error submitting rating:', error);
-      // Update the error message state
-      setSubmissionError('Error submitting rating. Please try again.');
-    });
-  };
 
   // Fetch all professors from the backend API
   useEffect(() => {
@@ -93,14 +62,12 @@ function App() {
               <>
                 {error && <p>Error loading professor details: {error}</p>}
                 {loading ? <p>Loading professor details...</p> : professorsList && professorsList.length > 0 ? <Professor details={professorsList[0]} /> : <p>Professor details not found.</p>} {/* Render the Professor component with details of the first professor or show loading message */}
-                {submissionMessage && <p>{submissionMessage}</p>}
-                {submissionError && <p>{submissionError}</p>}
                 <ProfessorList professors={professorsList} /> {/* Passing the professorsList as professors prop */}
               </>
             } />
             <Route path="/about" element={<About />} /> {/* Render the About component */}
             <Route path="/contact" element={<Contact />} /> {/* Render the Contact component */}
-            <Route path="/rate/:professorId" element={<RatingForm onSubmitRating={onSubmitRating} />} /> {/* The RatingForm component will handle extracting the professorId from the route parameters */}
+            <Route path="/rate/:professorId" element={<RatingForm />} /> {/* The RatingForm component will handle extracting the professorId from the route parameters */}
             <Route path="/login" element={<Login />} /> {/* Render the Login component */}
             <Route path="/register" element={<Registration />} /> {/* Render the Registration component */}
             <Route path="/add-professor" element={<ProtectedRoute><AddProfessorForm /></ProtectedRoute>} />
