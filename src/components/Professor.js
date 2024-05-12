@@ -9,7 +9,7 @@ const Professor = ({ details }) => {
   const tags = details && Array.isArray(details.tags) ? details.tags : [];
 
   return (
-    <Box p={5} shadow="md" borderWidth="1px">
+    <Box p={5} shadow="md" borderWidth="1px" className="ProfessorList">
       <Flex direction="column" align="start">
         <Stack spacing={3} direction="column" align="start">
           <Text fontSize="2xl" fontWeight="bold" mb={2}>{details ? details.name : 'Professor Name'}</Text>
@@ -31,10 +31,10 @@ const Professor = ({ details }) => {
         <Flex wrap="wrap">
           {/* Tags would be displayed here */}
           {tags.map((tag, index) => (
-            <Button key={index} size="sm" m={1}>{tag}</Button>
+            <Button key={index} size="sm" m={1} className="TagButton">{tag}</Button>
           ))}
         </Flex>
-        <Button colorScheme="teal" variant="outline" mt={4}>
+        <Button colorScheme="teal" variant="outline" mt={4} className="RateButton">
           Rate Professor
         </Button>
       </Flex>

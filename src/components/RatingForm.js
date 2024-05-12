@@ -74,7 +74,7 @@ const RatingForm = () => {
   };
 
   return (
-    <Box my={8} textAlign="left">
+    <Box my={8} textAlign="left" className="RatingForm">
       <form onSubmit={handleSubmit}>
         <FormControl isRequired>
           <FormLabel htmlFor="clarity">Clarity</FormLabel>

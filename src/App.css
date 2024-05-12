@@ -86,6 +86,22 @@ button:hover {
   background-color: #2C5282; /* Darken button on hover for feedback */
 }
 
+/* Specific styles for tag buttons in the Professor component */
+.TagButton {
+  background-color: #CBD5E0; /* Lighter shade for tag buttons */
+  color: #2D3748; /* Dark text for contrast */
+  margin: 0.25rem; /* Smaller margin for inline display */
+  padding: 0.25rem 0.75rem; /* Smaller padding for tags */
+}
+
+/* Specific styles for rate button in the Professor component */
+.RateButton {
+  background-color: #68D391; /* Green shade for rate button */
+  color: white; /* White text for contrast */
+  margin-top: 1rem; /* Margin top for spacing */
+  padding: 0.5rem 1rem; /* Standard padding for buttons */
+}
+
 /* Responsive design adjustments */
 @media (max-width: 768px) {
   .ProfessorList, .RatingForm {
