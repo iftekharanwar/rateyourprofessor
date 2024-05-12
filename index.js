@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors({ origin: ['http://localhost:3000', 'https://dynamic-valkyrie-c2466f.netlify.app', 'https://adorable-baklava-77a579.netlify.app', 'https://gregarious-toffee-be25ae.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
+app.use(cors({ origin: ['http://localhost:3000', 'https://dynamic-valkyrie-c2466f.netlify.app', 'https://adorable-baklava-77a579.netlify.app', 'https://gregarious-toffee-be25ae.netlify.app', 'https://fantastic-lebkuchen-6b4f8d.netlify.app'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
