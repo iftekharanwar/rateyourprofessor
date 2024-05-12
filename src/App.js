@@ -28,7 +28,7 @@ function App() {
     const apiUrl = `https://professor-rating-app-mvkez8y0.devinapps.com/api/professors`;
 
     // Fetch data and update state
-    fetch(apiUrl)
+    fetch(apiUrl, { credentials: 'include' }) // Added credentials option for CORS
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
