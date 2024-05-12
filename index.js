@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
 app.set('trust proxy', 1);
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const helmet = require('helmet');
