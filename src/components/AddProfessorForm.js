@@ -9,7 +9,7 @@ const AddProfessorForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://professor-rating-app-jxmv10yc.devinapps.com/api/professors', {
+      const response = await fetch('https://professor-rating-app-mvkez8y0.devinapps.com/api/professors', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

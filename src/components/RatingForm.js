@@ -28,7 +28,7 @@ const RatingForm = () => {
       isRatingValid(easiness)
     ) {
       try {
-        const response = await fetch('https://professor-rating-app-jxmv10yc.devinapps.com/api/ratings', {
+        const response = await fetch('https://professor-rating-app-mvkez8y0.devinapps.com/api/ratings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

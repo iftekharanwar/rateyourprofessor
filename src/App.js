@@ -25,7 +25,7 @@ function App() {
   // Fetch all professors from the backend API
   useEffect(() => {
     // Update the API URL to point to the correct backend server
-    const apiUrl = `https://professor-rating-app-jxmv10yc.devinapps.com/api/professors`;
+    const apiUrl = `https://professor-rating-app-mvkez8y0.devinapps.com/api/professors`;
 
     // Fetch data and update state
     fetch(apiUrl)
