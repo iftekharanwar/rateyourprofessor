@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   FormControl,
@@ -9,6 +9,7 @@ import {
   Box,
   useToast,
 } from '@chakra-ui/react';
+import { AuthContext } from '../AuthContext'; // Import the AuthContext
 
 const RatingForm = () => {
   const { professorId } = useParams();
@@ -17,6 +18,7 @@ const RatingForm = () => {
   const [easiness, setEasiness] = useState('');
   const [comment, setComment] = useState('');
   const toast = useToast();
+  const { token } = useContext(AuthContext); // Use the AuthContext to get the token
 
   const isRatingValid = (rating) => rating >= 1 && rating <= 5;
 
@@ -32,6 +34,8 @@ const RatingForm = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            // Include the Authorization header with the JWT token
+            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
             professorId,
