@@ -28,14 +28,37 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
-// Middleware to parse request body, enable CORS, set security headers, and rate limiting
 app.use(express.json());
-app.use(cors({ origin: ['https://euphonious-cucurucho-774f46.netlify.app', 'http://localhost:3000'], credentials: true, methods: "GET,HEAD,PUT,PATCH,POST,DELETE", allowedHeaders: "Content-Type,Authorization" }));
+
+app.use(cors({
+  origin: 'https://stalwart-chebakia-698c7a.netlify.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100 // limit each IP to 100 requests per windowMs
 }));
+
+// Handle OPTIONS requests for CORS preflight
+app.options('*', cors({
+  origin: 'https://stalwart-chebakia-698c7a.netlify.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middleware to log the response headers for debugging purposes
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    logger.info(`Response headers: ${JSON.stringify(res.getHeaders())}`);
+  });
+  next();
+});
 
 // Database setup
 const db = new sqlite3.Database(process.env.DATABASE_PATH || './ratings.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -248,6 +271,8 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    // Log the request body to confirm the data being received
+    logger.info(`Login attempt: email=${email}, password=${password}`);
     if (!email || !password) {
       return res.status(400).json({ error: 'Please provide email and password.' });
     }
@@ -255,14 +280,24 @@ app.post('/api/login', async (req, res) => {
     const sql = `SELECT * FROM users WHERE email = ?`;
     db.get(sql, email, async (err, user) => {
       if (err) {
+        // Log any database errors during the login process
+        logger.error(`Database error during login for email: ${email}: ${err.message}`);
         return res.status(400).json({ error: err.message });
       }
       if (!user) {
+        // Log if user is not found
+        logger.info(`Login failed: User not found for email: ${email}`);
         return res.status(401).json({ error: 'Invalid email or password.' });
       }
+      // Log the user found in the database
+      logger.info(`User found for email: ${email}: ${JSON.stringify(user)}`);
       // Compare hashed password
       const match = await bcrypt.compare(password, user.password);
+      // Log the result of the password comparison
+      logger.info(`Password comparison for email: ${email}: ${match}`);
       if (!match) {
+        // Log failed password comparison
+        logger.info(`Password comparison failed for email: ${email}.`);
         return res.status(401).json({ error: 'Invalid email or password.' });
       }
       // Create JWT token
@@ -271,9 +306,11 @@ app.post('/api/login', async (req, res) => {
         message: 'User logged in successfully',
         token
       });
+      // This section has been removed to prevent redeclaration of 'token' variable
     });
   } catch (error) {
-    logger.error(error.message);
+    // Log any errors during the login process
+    logger.error(`Login error for email: ${req.body.email}: ${error.message}`);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
