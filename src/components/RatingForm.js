@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   FormControl,
@@ -30,7 +30,7 @@ const RatingForm = () => {
       isRatingValid(easiness)
     ) {
       try {
-        const response = await fetch('https://professor-rating-app-mvkez8y0.devinapps.com/api/ratings', {
+        const response = await fetch('https://professor-rating-app-glutzx05.devinapps.com/api/ratings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
