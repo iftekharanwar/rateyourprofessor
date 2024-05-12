@@ -13,9 +13,14 @@ const Professor = ({ details }) => {
   const tags = details && Array.isArray(details.tags) ? details.tags : [];
 
   const handleRateClick = (professor) => {
-    console.log('Rate button clicked, professor details:', professor); // Debugging statement
-    setSelectedProfessor(professor);
-    onOpen();
+    // Added null check for professor object before setting state and opening modal
+    if (professor) {
+      console.log('Rate button clicked, professor details:', professor); // Debugging statement
+      setSelectedProfessor(professor);
+      onOpen();
+    } else {
+      console.error('Error: Attempted to rate a null professor object');
+    }
   };
 
   console.log('Modal isOpen state:', isOpen); // Debugging statement
