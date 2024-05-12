@@ -13,8 +13,8 @@ const Professor = ({ details }) => {
       <Flex direction="column" align="start">
         <Text fontSize="2xl" fontWeight="bold">{details ? details.name : 'Professor Name'}</Text>
         {/* Separate the department and university onto a new line */}
-        <Text fontSize="l">{details ? `${details.department}, ` : 'Department, '}</Text>
-        <Text fontSize="l">{details ? details.university : 'University'}</Text>
+        <Text fontSize="l" mt={1}>{details ? details.department : 'Department'}</Text>
+        <Text fontSize="l" mt={1}>{details ? details.university : 'University'}</Text>
         <Box>
           {/* Ratings would be displayed here */}
           <Text fontSize="m">Clarity: {ratings.clarity}</Text>
